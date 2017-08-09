@@ -24,17 +24,16 @@ io.on('connection', (socket) => {
     createdAt: new Date().toString()
   });
 
-  socket.on("createMessage", (data) => {
-    console.log(JSON.stringify(data, undefined, 2));
+  socket.on("createMessage", (message) => {
+    console.log(JSON.stringify(message, undefined, 2));
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    })
   });
 
   socket.on('disconnect', () => console.log("client disconnected"));
-
-  socket.emit('newMessage', {
-    from: 'me',
-    text: "lorem ipsum argee to disagree",
-    createdAt: new Date().toString()
-  });
 
 });
 
