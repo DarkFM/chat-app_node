@@ -9,9 +9,13 @@ socket.on('disconnect', function() {
   console.log('disconnected from server');
 });
 
-socket.on('newEmail', function (email) {
-  console.log('new Email', email);
-})
+socket.on('adminMessage', function (message) {
+  console.log(JSON.stringify(message, null, 2));
+});
+
+socket.on('newUser', function (mssg) {
+  console.log(mssg.text);
+});
 
 socket.on('newMessage', function (email) {
   console.table([email]);
