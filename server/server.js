@@ -20,13 +20,14 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  socket.broadcast.emit('newUser', generateMessage('Admin', "New user joined"));
+  socket.broadcast.emit('newMessage', generateMessage('Admin', "New user joined"));
 
-  socket.emit('newUser', generateMessage('Admin', 'Welcome to the chat app'))
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'))
 
-  socket.on("createMessage", (message) => {
+  socket.on("createMessage", (message, callback) => {
     console.log(JSON.stringify(message, undefined, 2));
     io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('This from the server'); // sends an event back to client, and calls the callback in client side
 
     // send to everyone but the sender
   //   socket.broadcast.emit('newMessage', {

@@ -9,14 +9,22 @@ socket.on('disconnect', function() {
   console.log('disconnected from server');
 });
 
-socket.on('adminMessage', function (message) {
-  console.log(JSON.stringify(message, null, 2));
+socket.on('newMessage', function (message) {
+  // console.table([message]);
+  var li = document.createElement('li');
+  li.textContent = `${message.from}: ${message.text}`;
+  document.getElementById("messages").appendChild(li);
+
 });
 
-socket.on('newUser', function (mssg) {
-  console.log(mssg.text);
-});
 
-socket.on('newMessage', function (email) {
-  console.table([email]);
-});
+var form = document.getElementById("message-form");
+document.addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  socket.emit('createMessage', {
+    from: 'User',
+    text: document.querySelector("[name=message]").value
+  }, function () {
+
+  });
+})
