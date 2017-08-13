@@ -1,5 +1,26 @@
 var socket = io(); // initiating the request from client to the server to
                     // a websocket and to keep connection open
+
+function scrollToBottom() {
+  // Selectors
+  var messages = document.getElementById("messages");
+  var newMessage = messages.lastElementChild;
+  // Heights
+  var clientHeight = messages.clientHeight;
+  var scrollTop = messages.scrollTop;
+  var scrollHeight = messages.scrollHeight;
+  var newMessageHeight = newMessage.clientHeight;
+  var lastMessageHeight = $(newMessage.previousElementSibling).innerHeight();
+  // var newHeight = newMessage.previousElementSibling.clientHeight;
+
+  // console.log(newHeight);
+  // console.log(lastMessageHeight);
+
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+    messages.scrollTop = scrollHeight;
+  }
+}
+
 socket.on('connect', function() {
   console.log('connected to server');
 
@@ -21,6 +42,7 @@ socket.on('newMessage', function (message) {
 
   // NOTE: appendChild only appends a node, NOT a html string
   document.getElementById('messages').insertAdjacentHTML('beforeend', html);
+  scrollToBottom();
 
   // var li = document.createElement('li');
   // li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
@@ -38,6 +60,7 @@ socket.on('newLocationMessage', function (message) {
   });
 
   document.getElementById('messages').insertAdjacentHTML('beforeend', html);
+  scrollToBottom();
 
   // var li = document.createElement('li');
   // var a = document.createElement('a');
