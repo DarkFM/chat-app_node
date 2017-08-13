@@ -25,9 +25,9 @@ io.on('connection', (socket) => {
   socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'))
 
   socket.on("createMessage", (message, callback) => {
-    console.log(JSON.stringify(message, undefined, 2));
+    console.log("createMessage", JSON.stringify(message, undefined, 2));
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback('This from the server'); // sends an event back to client, and calls the callback in client side
+    callback(); // sends an event back to client, and calls the callback in client side
   });
 
   socket.on("createLocationMessage", (coords) => {
@@ -35,9 +35,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => console.log("client disconnected"));
-
-
-
 
 });
 

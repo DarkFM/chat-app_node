@@ -20,9 +20,10 @@ socket.on('newMessage', function (message) {
 socket.on('newLocationMessage', function (message) {
   var li = document.createElement('li');
   var a = document.createElement('a');
-  a.innerHTML = '<a target="_blank"> My current location';
-  li.textContent = message.from;
-  a.setAttribute('href', message.url)
+  a.textContent = 'My current location';
+  li.textContent = message.from + " ";
+  a.setAttribute('href', message.url);
+  a.setAttribute("target", "_blank")
   li.appendChild(a);
   document.getElementById("messages").appendChild(li);
 })
@@ -31,11 +32,12 @@ socket.on('newLocationMessage', function (message) {
 var form = document.getElementById("message-form");
 document.addEventListener('submit', function (ev) {
   ev.preventDefault();
+  var messageTextbox = document.querySelector('[name=message]');
   socket.emit('createMessage', {
     from: 'User',
-    text: document.querySelector("[name=message]").value
+    text: messageTextbox.value
   }, function () {
-
+    messageTextbox.value = '';
   });
 });
 
@@ -46,13 +48,26 @@ locationButton.addEventListener('click', function (ev) {
     return alert('Geolaction not supportd by your browser')
   }
 
+  // disable button while waiting for location data
+  locationButton.setAttribute("disabled", "true");
+  locationButton.style.cursor = "progress";
+  locationButton.textContent = 'Sending location...';
+
   navigator.geolocation.getCurrentPosition(function success(position) {
     socket.emit('createLocationMessage', {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     });
+    locationButton.removeAttribute("disabled");
+    locationButton.style.cursor = "pointer";
+    locationButton.textContent = 'Send location';
+
+
     console.log(position);
   }, function errHandler() { // fires on return ack from server
+    locationButton.removeAttribute("disabled");
+    locationButton.style.cursor = "pointer";
+    locationButton.textContent = 'Send location';
     console.error("unable to fetch location");
   })
 })
