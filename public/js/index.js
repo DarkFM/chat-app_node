@@ -11,24 +11,44 @@ socket.on('disconnect', function() {
 
 socket.on('newMessage', function (message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = document.createElement('li');
-  li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
-  document.getElementById("messages").appendChild(li);
+  var template = document.getElementById('message-template').innerHTML;
+  // returns a html string
+  var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime
+  });
+
+  // NOTE: appendChild only appends a node, NOT a html string
+  document.getElementById('messages').insertAdjacentHTML('beforeend', html);
+
+  // var li = document.createElement('li');
+  // li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
+  // document.getElementById("messages").appendChild(li);
 
 });
 
 socket.on('newLocationMessage', function (message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = document.createElement('li');
-  var a = document.createElement('a');
-  a.textContent = 'My current location';
-  li.textContent = message.from + " " + formattedTime + ": ";
+  var template = document.getElementById('location-message-template').innerHTML;
+  var html = Mustache.render(template, {
+    createdAt: formattedTime,
+    from: message.from,
+    url: message.url
+  });
 
-  a.setAttribute('href', message.url);
-  a.setAttribute("target", "_blank");
+  document.getElementById('messages').insertAdjacentHTML('beforeend', html);
 
-  li.appendChild(a);
-  document.getElementById("messages").appendChild(li);
+  // var li = document.createElement('li');
+  // var a = document.createElement('a');
+  // a.textContent = 'My current location';
+  // li.textContent = message.from + " " + formattedTime + ": ";
+  //
+  // a.setAttribute('href', message.url);
+  // a.setAttribute("target", "_blank");
+  //
+  // li.appendChild(a);
+  // document.getElementById("messages").appendChild(li);
 })
 
 // event handler for FORM
