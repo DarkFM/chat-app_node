@@ -13,9 +13,6 @@ function scrollToBottom() {
   var lastMessageHeight = $(newMessage.previousElementSibling).innerHeight();
   // var newHeight = newMessage.previousElementSibling.clientHeight;
 
-  // console.log(newHeight);
-  // console.log(lastMessageHeight);
-
   if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
     messages.scrollTop = scrollHeight;
   }
