@@ -53,13 +53,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on("createMessage", (message, callback) => {
-    // console.log("createMessage", JSON.stringify(message, undefined, 2));
-    io.emit('newMessage', generateMessage(message.from, message.text)); // emit to every connected user
+    var user = users.getUser(socket.id);
+    if(user && isRealString(message.text)){
+      // io.to() === io.in()
+      io.in(user.room).emit('newMessage', generateMessage(user.name, message.text)); // emit to every connected user
+    }
+    // io.emit('newMessage', generateMessage(message.from, message.text)); // emit to every connected user
     callback(); // sends an event back to client, and calls the callback in client side
   });
 
   socket.on("createLocationMessage", (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage("Admin", coords.latitude, coords.longitude))
+    var user = users.getUser(socket.id);
+    if(!user) return console.error();
+    io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude))
   });
 
   socket.on('disconnect', (reason) => {

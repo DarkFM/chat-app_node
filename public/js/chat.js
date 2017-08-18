@@ -86,9 +86,9 @@ socket.on('newLocationMessage', function (message) {
 var form = document.getElementById("message-form");
 document.addEventListener('submit', function (ev) {
   ev.preventDefault();
+
   var messageTextbox = document.querySelector('[name=message]');
   socket.emit('createMessage', {
-    from: 'User',
     text: messageTextbox.value
   }, function () {// fires on return ack from server
     messageTextbox.value = '';
