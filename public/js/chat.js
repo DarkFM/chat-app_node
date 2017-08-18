@@ -19,12 +19,34 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function() {
-  console.log('connected to server');
+  var params = $.deparam(window.location.search);
 
+  socket.emit('join', params, function (err) {
+    if (err) {
+      alert(err);
+      // redirect user back to root page on err
+      window.location.href = '/';
+    } else {
+      // console.log("No error");
+    }
+  });
 });
 
 socket.on('disconnect', function() {
   console.log('disconnected from server');
+});
+
+socket.on('updateUserList', function (users) {
+  var ol = document.createElement('ol');
+
+  users.forEach(function (user) {
+    var li = document.createElement('li');
+    li.textContent = user;
+    ol.appendChild(li);
+  });
+
+  document.getElementById('users').innerHTML = ol.outerHTML;
+  // selUsers.innerHTML = ol.innerHTML;
 });
 
 socket.on('newMessage', function (message) {
@@ -58,17 +80,6 @@ socket.on('newLocationMessage', function (message) {
 
   document.getElementById('messages').insertAdjacentHTML('beforeend', html);
   scrollToBottom();
-
-  // var li = document.createElement('li');
-  // var a = document.createElement('a');
-  // a.textContent = 'My current location';
-  // li.textContent = message.from + " " + formattedTime + ": ";
-  //
-  // a.setAttribute('href', message.url);
-  // a.setAttribute("target", "_blank");
-  //
-  // li.appendChild(a);
-  // document.getElementById("messages").appendChild(li);
 })
 
 // event handler for FORM
@@ -79,7 +90,7 @@ document.addEventListener('submit', function (ev) {
   socket.emit('createMessage', {
     from: 'User',
     text: messageTextbox.value
-  }, function () {
+  }, function () {// fires on return ack from server
     messageTextbox.value = '';
   });
 });
@@ -88,7 +99,7 @@ document.addEventListener('submit', function (ev) {
 var locationButton = document.getElementById('send-location');
 locationButton.addEventListener('click', function (ev) {
   if(!("geolocation" in navigator)){
-    return alert('Geolaction not supportd by your browser')
+    return alert('Geolocation not supportd by your browser')
   }
 
   // disable button while waiting for location data
@@ -106,8 +117,8 @@ locationButton.addEventListener('click', function (ev) {
     locationButton.textContent = 'Send location';
 
 
-    console.log(position);
-  }, function errHandler() { // fires on return ack from server
+    // console.log(position);
+  }, function errHandler() {
     locationButton.removeAttribute("disabled");
     locationButton.style.cursor = "pointer";
     locationButton.textContent = 'Send location';
