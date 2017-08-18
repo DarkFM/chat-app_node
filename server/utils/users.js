@@ -33,6 +33,14 @@ class Users {
     var namesArray = users.map(user => user.name);
     return namesArray;
   }
+  usernameTaken (name) {
+    var isTaken = false;
+    for(const user of this.users) {
+      if(user.name.toLowerCase() === name.toLowerCase())
+        return isTaken = true;
+    }
+    return isTaken;
+  }
 }
 
 module.exports = {Users};

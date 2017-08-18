@@ -60,4 +60,14 @@ describe('Users', () => {
     var userList = users.getUserList('react course');
     expect(userList).toEqual(['jen'])
   });
+
+  it('should return true if username is taken', () => {
+    var userName = 'JEn';
+    expect(users.usernameTaken(userName)).toBe(true);
+  });
+
+  it('should return false if username is NOT taken', () => {
+    var userName = 'Jennifer';
+    expect(users.usernameTaken(userName)).toBe(false);
+  });
 });

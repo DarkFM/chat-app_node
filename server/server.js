@@ -34,7 +34,9 @@ io.on('connection', (socket) => {
     if(!isRealString(params.name) || !isRealString(params.room)) {
       return callback('Name and room name are required');
     }
-
+    if(users.usernameTaken(params.name)) {
+      return callback('Username taken. Please user a different Name');
+    }
     socket.join(params.room, (err) => {
       // socket.leave() to leave the room
       if(err) return console.error(err);
